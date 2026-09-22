@@ -1,0 +1,70 @@
+\subsection{Understanding the Strong Law of Large Numbers}
+
+To fully appreciate the mathematical rigour of the SLLN, we must investigate the mechanics of the drifting effect, covered in Section \ref{almost-sure-convergence}, and isolate the specific conditions that prevent it from continuing indefinitely. The fundamental idea that causes \textit{almost sure convergence} is contained within the bounds of probability limits. To explore this concept, we will need to understand two main areas, \textit{The Borel-Cantelli Lemma} and \textit{Kolmogorov's Formulation}, as well as cover the specific notation required for this section \cite[sec.~4]{probability1995measure}.
+
+To establish \textit{almost sure convergence} for the SLLN, we must demonstrate that the sample mean eventually remains within an arbitrarily small margin of error $\epsilon > 0$. To formalize this continuous timeline, we define an event $A_n$ representing the occurrence where an individual sample mean $\bar{X}_n$ deviates from the true mean $\mu$ by at least $\epsilon$:
+\begin{equation}
+    A_n = \left\{ |\bar{X}_n - \mu| \ge \epsilon \right\}
+\end{equation}
+
+To measure the behaviour of these deviations over time, we use infinite unions and intersections. The infinite union, denoted by $\bigcup_{n=N}^{\infty} A_n$, represents the occurrence of at least one deviation from index $N$ onwards. Applying an infinite intersection to these continuous unions, denoted by $\bigcap_{N=1}^{\infty} \bigcup_{n=N}^{\infty} A_n$, creates a strict boundary dictating that no matter how large $N$ becomes, a deviation will still eventually occur.
+
+As established by Billingsley \cite[pp.~52--53]{probability1995measure}, combining these operations constructs the limit superior of the sequence. This defines an event occurring infinitely often (i.o.):
+\begin{equation}
+    \limsup_{n \to \infty} A_n = \bigcap_{N=1}^{\infty} \bigcup_{n=N}^{\infty} A_n = \{A_n \text{ i.o.}\}
+\end{equation}
+
+This notation bridges the conceptual idea of drifting directly to our final proof. For the SLLN to hold, the probability of this entire limit superior must be exactly zero.
+
+\subsubsection{The First Borel-Cantelli Lemma}
+
+For the sequence of sample means to \textit{converge almost surely}, the probability that deviations occur infinitely often must be strictly zero. Having formalised this requirement as $\mathbb{P}(\limsup_{n \to \infty} A_n) = 0$, we require a mechanism to prove when this condition is actually met.
+
+The First Borel-Cantelli Lemma establishes that if the infinite sum of the individual snapshot probabilities converges to a finite value, the sequence will \textit{almost surely} stop deviating from the boundary. In Billingsley's formulation \cite[Theorem 4.3, p.~59]{probability1995measure}:
+
+\begin{lemma}[First Borel-Cantelli Lemma]
+If the infinite sum of the probabilities of a sequence of events $A_n$ converges, then the probability of their \textit{limit superior} (the event occurring infinitely often) is exactly zero:
+\begin{equation}
+    \sum_{n=1}^{\infty} \mathbb{P}(A_n) < \infty \implies \mathbb{P}\left(\limsup_{n \to \infty} A_n\right) = 0
+\end{equation}
+\end{lemma}
+
+\subsubsection{Kolmogorov's Formulation}
+
+The First Borel-Cantelli Lemma provides the necessary condition to prevent infinite drifting, but proving that the sum $\sum \mathbb{P}(A_n)$ actually converges for a sample mean requires us to build further on the mathematics we have already seen.
+
+It might seem intuitive to use Chebyshev's inequality similar to how we applied it in the WLLN. However, if we attempt to rely on this bound to satisfy the Borel-Cantelli condition, we encounter a problem with the rate at which it decays. Using Chebyshev's inequality, we find that the probability of a single deviation is bounded by:
+\begin{equation}
+    \mathbb{P}(|\overline{X}_n - \mu| \ge \epsilon) \le \frac{\sigma^2}{n \epsilon^2}
+\end{equation}
+
+To prove almost sure convergence, the First Borel-Cantelli Lemma strictly requires the infinite sum of these probabilities to be a finite number. If we attempt to sum the Chebyshev bound over all $n$ towards infinity, we can factor out the constants to reveal the underlying sequence:
+\begin{equation}
+    \sum_{n=1}^{\infty} \frac{\sigma^2}{n \epsilon^2} = \frac{\sigma^2}{\epsilon^2} \sum_{n=1}^{\infty} \frac{1}{n}
+\end{equation}
+
+The remaining sequence, $\sum \frac{1}{n}$, is the harmonic series. It is a fundamental property of calculus that the harmonic series strictly diverges to infinity. Because this sum does not converge to a finite number, Chebyshev's inequality decays too slowly to satisfy the Borel-Cantelli requirement. This dead end is exactly what necessitates a more powerful bounding method.
+
+We can solve this by using Andrey Kolmogorov's much stricter maximal bound known as Kolmogorov's Inequality \cite[Theorem 22.4, p.~287]{probability1995measure}. For a sequence of independent variables with finite variance, Kolmogorov's inequality bounds the maximum partial sum rather than just the final sum:
+\begin{equation}
+    \mathbb{P} \left( \max_{1 \le k \le n} \left| \sum_{i=1}^k (X_i - \mu) \right| \ge \epsilon \right) \le \frac{\text{Var}(\sum_{i=1}^n X_i)}{\epsilon^2}
+\end{equation}
+
+To apply this to the SLLN, the classical proof evaluates the sequence along an exponentially growing dual subsequence, $n = 2^k$. By applying Kolmogorov's inequality to this subsequence, we obtain a bound strong enough to control the maximum fluctuations between $2^{k-1}$ and $2^k$ \cite[p.~288]{probability1995measure}. This crucial step ensures that the sum of the probabilities over the subsequence converges to a finite number \cite[p.~289]{probability1995measure}:
+\begin{equation}
+    \sum_{k=1}^{\infty} \mathbb{P} \left( \max_{2^{k-1} < n \le 2^k} |\overline{X}_n - \mu| \ge \epsilon \right) < \infty
+\end{equation}
+
+We can now directly apply the First Borel-Cantelli Lemma to the subsequence, which then extends to all $n$ \cite[Theorem 4.3, p.~59]{probability1995measure}. This proves that the sequence of sample means will eventually remain within the margin of error for all future observations:
+\begin{equation}
+    \mathbb{P}\left(\limsup_{n \to \infty} A_n\right) = 0
+\end{equation}
+
+This equation states that, for any arbitrarily small margin of error $\epsilon > 0$, deviations will occur only finitely many times.
+
+As this holds true for any $\epsilon > 0$, it implies that the sequence of sample means $\overline{X}_n$ will eventually remain within every possible bound around $\mu$. In the formal language of measure theory, the set of outcomes where the sequence fails to converge to $\mu$ has a probability measure of zero \cite[Theorem 20.5, p.~268]{probability1995measure}. Therefore, we can conclude that the sequence of sample means converges to the true population mean \textit{almost surely}, with probability 1:
+\begin{equation}
+    \mathbb{P} \left( \lim_{n \to \infty} \overline{X}_n = \mu \right) = 1
+\end{equation} \qed
+
+Thus, we arrive at the formal mathematical conclusion of the SLLN, proving \textit{almost sure convergence}.
